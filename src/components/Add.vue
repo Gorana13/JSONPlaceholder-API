@@ -9,14 +9,7 @@
       <v-card>
         <v-card-text>
           <form @submit.prevent="onSubmit" method="post">
-            <ValidationProvider
-              name="field"
-              rules="required"
-              v-slot="{ errors }"
-            >
-              <v-text-field label="Naziv" v-model="title"></v-text-field>
-              <span>{{ errors[0] }}</span>
-            </ValidationProvider>
+            <v-text-field label="Naziv" v-model="title"></v-text-field>
             <v-text-field v-model="body" label="Text"></v-text-field>
             <v-btn type="submit"> submit </v-btn>
             <v-btn @click.prevent="close()"> Close </v-btn>
@@ -30,14 +23,10 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import { ValidationProvider } from "vee-validate";
 
 Vue.use(VueAxios, axios);
 
 export default {
-  components: {
-    ValidationProvider,
-  },
   name: "Add",
   props: {
     dialog: {
