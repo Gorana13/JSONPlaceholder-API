@@ -2,7 +2,7 @@
   <v-app>
     <v-dialog
       @click:outside="close()"
-      v-model="dialog"
+      v-model="editDialog"
       scrollable
       max-width="80%"
     >
@@ -29,16 +29,10 @@
   </v-app>
 </template>
 <script>
-import Vue from "vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
-
-Vue.use(VueAxios, axios);
-
 export default {
   name: "Edit",
   props: {
-    dialog: {
+    editDialog: {
       default: false,
     },
     editItem: {
@@ -81,15 +75,15 @@ export default {
         title: this.title,
         body: this.body,
       };
-      Vue.axios
+      this.axios
         .patch("https://jsonplaceholder.typicode.com/posts/1", this.item)
         .then(() => {
           this.$emit("editDone", this.item);
         })
         .catch((err) => {
           console.log(err);
-        });
-      this.close();
+        })
+        .finally(() => this.close());
       // this.fetch();
     },
   },

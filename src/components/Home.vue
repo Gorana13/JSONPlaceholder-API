@@ -27,7 +27,7 @@
                 single-line
                 hide-details
               ></v-text-field>
-              <v-btn class="ml-2" @click.prevent="dialogShow = true">
+              <v-btn class="ml-2" @click.prevent="dialogAddShow = true">
                 <v-icon dark>mdi-plus</v-icon>Add
               </v-btn>
             </div>
@@ -61,24 +61,26 @@
           </tr>
         </template>
       </v-data-table>
-      <v-dialog v-model="dialog3" max-width="500px">
+      <v-dialog v-model="errorDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span>Greška, kreiran je zapis sa istim id-em!</span>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog3 = false"> Close </v-btn>
+            <v-btn color="primary" text @click="errorDialog = false">
+              Close
+            </v-btn>
           </v-card-title>
         </v-card></v-dialog
       >
     </v-card>
     <add
       @fetchList="addToList"
-      :dialog="dialogShow"
+      :addDialog="dialogAddShow"
       @closeEvent="closeFcn"
     ></add>
     <edit
       :editItem="editTemplate"
-      :dialog="dialogEditShow"
+      :editDialog="dialogEditShow"
       @closeEvent="closeFcn"
       @editDone="editTable"
     ></edit>
@@ -87,12 +89,6 @@
 
 
 <script>
-import Vue from "vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
-
-Vue.use(VueAxios, axios);
-
 import Add from "./Add";
 import Edit from "./Edit";
 export default {
@@ -104,7 +100,7 @@ export default {
   data() {
     return {
       list: [],
-      dialog3: false,
+      errorDialog: false,
       editTemplate: {
         id: null,
         title: null,
@@ -112,7 +108,7 @@ export default {
       },
       editIndex: null,
       search: "",
-      dialogShow: false,
+      dialogAddShow: false,
       dialogEditShow: false,
       headers: [
         {
@@ -145,7 +141,7 @@ export default {
   },
   methods: {
     closeFcn() {
-      this.dialogShow = false;
+      this.dialogAddShow = false;
       this.dialogEditShow = false;
     },
     editFn(item) {
@@ -155,7 +151,7 @@ export default {
       this.editTemplate.title = item.title;
     },
     fetch() {
-      Vue.axios
+      this.axios
         .get("https://jsonplaceholder.typicode.com/posts")
         .then((resp) => {
           this.list = resp.data;
@@ -165,17 +161,17 @@ export default {
         });
     },
     errorFnc() {
-      this.dialog3 = true;
+      this.errorDialog = true;
     },
     addToList(nv) {
-      if (!this.list.includes(nv.id)) {
+      if (!this.list.some((element) => element.id === nv.id)) {
         this.list.push(nv);
       } else {
         this.errorFnc();
       }
     },
     deleteItem(id) {
-      Vue.axios
+      this.axios
         .delete(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then(() => {
           this.list = this.list.filter((list) => list.id !== id);
@@ -183,7 +179,6 @@ export default {
         });
     },
     editTable(item) {
-      console.log(this.list);
       this.editIndex = this.list.findIndex((list) => list.id === item.id);
       this.list[this.editIndex].body = item.body;
       this.list[this.editIndex].title = item.title;

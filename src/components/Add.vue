@@ -2,7 +2,7 @@
   <v-app>
     <v-dialog
       @click:outside="close()"
-      v-model="dialog"
+      v-model="addDialog"
       scrollable
       max-width="80%"
     >
@@ -28,16 +28,10 @@
   </v-app>
 </template>
 <script>
-import Vue from "vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
-
-Vue.use(VueAxios, axios);
-
 export default {
   name: "Add",
   props: {
-    dialog: {
+    addDialog: {
       default: false,
     },
   },
@@ -61,6 +55,7 @@ export default {
       if (!this.$refs.frm.validate()) {
         return;
       }
+      this.$refs.frm.resetValidation();
       this.employeeData = {
         title: this.title,
         body: this.body,
@@ -70,9 +65,9 @@ export default {
       this.addNew();
     },
     addNew() {
-      Vue.axios
+      this.axios
         .post(
-          "https://jsonplaceholder.typicode.com/posts",
+          "https://jsonplaceholder.typicode.com/",
           JSON.stringify(this.employeeData)
         )
         .then(({ data }) => {
@@ -81,8 +76,7 @@ export default {
           this.$emit("fetchList", this.employeeData);
         })
         .catch((error) => {
-          this.errorMessage = error.message;
-          console.error("There was an error!", error);
+          console.error(error.message);
         })
         .finally(() => {
           this.close();

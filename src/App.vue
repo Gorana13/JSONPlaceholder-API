@@ -1,7 +1,5 @@
 <template>
-  <div id="app">
-    <home ref="href"></home>
-  </div>
+  <home ref="href"></home>
 </template>
 
 <script>
