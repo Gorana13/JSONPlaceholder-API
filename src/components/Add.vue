@@ -67,7 +67,7 @@ export default {
     addNew() {
       this.axios
         .post(
-          "https://jsonplaceholder.typicode.com/",
+          "https://jsonplaceholder.typicode.com/posts",
           JSON.stringify(this.employeeData)
         )
         .then(({ data }) => {
