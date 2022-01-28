@@ -44,7 +44,7 @@
                 color="light-blue lighten-5"
                 fab
                 small
-                @click="deleteItem(item.id)"
+                @click="openDeleteDialog(item.id)"
               >
                 <v-icon small> mdi-delete </v-icon>
               </v-btn>
@@ -61,12 +61,32 @@
           </tr>
         </template>
       </v-data-table>
+      <!-- Error dialog when adding -->
       <v-dialog v-model="errorDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span>Greška, kreiran je zapis sa istim id-em!</span>
+            <span>Error, id already exists!</span>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="errorDialog = false">
+              Close
+            </v-btn>
+          </v-card-title>
+        </v-card></v-dialog
+      >
+      <!-- Warning dialog when deleting -->
+      <v-dialog v-model="deleteDialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span>Are you sure you want to delete this item?</span>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              text
+              @click="deleteItem(deleteId), (deleteDialog = false)"
+            >
+              Delete
+            </v-btn>
+            <v-btn color="primary" text @click="deleteDialog = false">
               Close
             </v-btn>
           </v-card-title>
@@ -101,12 +121,14 @@ export default {
     return {
       list: [],
       errorDialog: false,
+      deleteDialog: false,
       editTemplate: {
         id: null,
         title: null,
         body: null,
       },
       editIndex: null,
+      deleteId: null,
       search: "",
       dialogAddShow: false,
       dialogEditShow: false,
@@ -182,6 +204,9 @@ export default {
       this.editIndex = this.list.findIndex((list) => list.id === item.id);
       this.list[this.editIndex].body = item.body;
       this.list[this.editIndex].title = item.title;
+    },
+    openDeleteDialog(id) {
+      (this.deleteDialog = true), (this.deleteId = id);
     },
   },
 };
