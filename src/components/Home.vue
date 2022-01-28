@@ -79,11 +79,7 @@
           <v-card-title>
             <span>Are you sure you want to delete this item?</span>
             <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              text
-              @click="deleteItem(deleteId), (deleteDialog = false)"
-            >
+            <v-btn color="primary" text @click="deleteItem(deleteId)">
               Delete
             </v-btn>
             <v-btn color="primary" text @click="deleteDialog = false">
@@ -198,6 +194,9 @@ export default {
         .then(() => {
           this.list = this.list.filter((list) => list.id !== id);
           // this.fetch();
+        })
+        .finally(() => {
+          this.deleteDialog = false;
         });
     },
     editTable(item) {
@@ -206,7 +205,8 @@ export default {
       this.list[this.editIndex].title = item.title;
     },
     openDeleteDialog(id) {
-      (this.deleteDialog = true), (this.deleteId = id);
+      this.deleteDialog = true;
+      this.deleteId = id;
     },
   },
 };
