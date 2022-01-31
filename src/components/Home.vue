@@ -12,21 +12,39 @@
         :headers="headers"
         :items="list"
         :items-per-page="5"
-        :search="search"
         class="table elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
             <div class="d-flex">
               <v-text-field
-                v-model="search"
+                v-model="searchID"
                 append-icon="mdi-magnify"
-                label="Search"
+                label="Search by ID"
                 dense
                 outlined
                 single-line
                 hide-details
               ></v-text-field>
+              <v-text-field
+                v-model="searchName"
+                append-icon="mdi-magnify"
+                label="Search by Name"
+                dense
+                outlined
+                single-line
+                hide-details
+              ></v-text-field>
+              <v-text-field
+                v-model="searchText"
+                append-icon="mdi-magnify"
+                label="Search Text"
+                dense
+                outlined
+                single-line
+                hide-details
+              ></v-text-field>
+              <v-btn class="searchBtn" @click="fetch">Search</v-btn>
               <v-btn class="ml-2" @click.prevent="dialogAddShow = true">
                 <v-icon dark>mdi-plus</v-icon>Add
               </v-btn>
@@ -118,6 +136,9 @@ export default {
       list: [],
       errorDialog: false,
       deleteDialog: false,
+      searchID: "",
+      searchName: "",
+      searchText: "",
       editTemplate: {
         id: null,
         title: null,
@@ -125,7 +146,6 @@ export default {
       },
       editIndex: null,
       deleteId: null,
-      search: "",
       dialogAddShow: false,
       dialogEditShow: false,
       headers: [
@@ -173,6 +193,14 @@ export default {
         .get("https://jsonplaceholder.typicode.com/posts")
         .then((resp) => {
           this.list = resp.data;
+        })
+        .then(() => {
+          this.list = this.list.filter(
+            (item) =>
+              (this.searchID ? item.id === Number(this.searchID) : true) &&
+              (this.searchName ? item.title.includes(this.searchName) : true) &&
+              (this.searchText ? item.body.includes(this.searchText) : true)
+          );
         })
         .catch((err) => {
           console.warn(err);
