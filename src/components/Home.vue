@@ -44,6 +44,7 @@
                 single-line
                 hide-details
               ></v-text-field>
+
               <v-btn class="searchBtn" @click="fetch">Search</v-btn>
               <v-btn class="ml-2" @click.prevent="dialogAddShow = true">
                 <v-icon dark>mdi-plus</v-icon>Add
@@ -75,6 +76,14 @@
               >
                 <v-icon small> mdi-pencil </v-icon>
               </v-btn>
+              <router-link
+                :to="{ name: 'details', params: { id: item.id } }"
+                id="eye"
+              >
+                <v-btn color="light-blue lighten-5" fab small>
+                  <v-icon small> mdi-eye </v-icon>
+                </v-btn></router-link
+              >
             </td>
           </tr>
         </template>
@@ -248,8 +257,12 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  min-width: 180px;
 }
 * >>> .rows {
   background-color: #fafafa;
+}
+#eye {
+  text-decoration: none;
 }
 </style>
