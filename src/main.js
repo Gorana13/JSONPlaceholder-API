@@ -4,6 +4,8 @@ import vuetify from './plugins/vuetify'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import router from './router'
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
 
 Vue.use(VueAxios, axios);
 Vue.use(router)

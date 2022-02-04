@@ -4,9 +4,12 @@
       <router-link to="/">Home</router-link>
       <router-view />
     </div>
-    <div id="data">
-      <h1>Title: {{ detailList.title }}</h1>
-      <h2>Text: {{ detailList.body }}</h2>
+    <div v-if="hasData" id="data">
+      <h1>Title: {{ details.title }}</h1>
+      <h2>Text: {{ details.body }}</h2>
+    </div>
+    <div v-else>
+      <h1>No data</h1>
     </div>
   </div>
 </template>
@@ -16,7 +19,8 @@ export default {
     return {
       id: this.$route.params.id,
       url: "https://jsonplaceholder.typicode.com/posts/",
-      detailList: [],
+      details: {},
+      hasData: false,
     };
   },
   mounted() {
@@ -27,10 +31,13 @@ export default {
       this.axios
         .get(this.url + this.id)
         .then((resp) => {
-          this.detailList = resp.data;
+          this.details = resp.data;
+          this.hasData = true;
         })
         .catch((err) => {
-          console.warn(err);
+          if (err.response.status == "404") {
+            console.warn(err);
+          }
         });
     },
   },
